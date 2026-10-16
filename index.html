@@ -1,0 +1,438 @@
+<title>중화 반응 복습실</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+KR:wght@500;700;900&family=Noto+Serif+KR:wght@400;600;900&display=swap">
+<style>
+/* 레이아웃: 수업 모션그래픽과 같은 종이+잉크 단색. 한 단 문서(정리 → 직접 섞어 보기 → 추가 문제), 문제마다 카드 */
+:root{
+  --paper:#f2f1ed; --card:#fbfaf7; --ink:#161616; --gray:#b9b7b1; --dim:#6b6a66; --line:#d9d7d0;
+  --ok:#1c7c3c; --no:#b42318; --hl:#161616;
+  --ylw:#f2d600; --grn:#2fbf4a; --blu:#1f6fff;
+  --hd:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; --lat:"Archivo Black","Noto Sans KR",sans-serif; --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#111110;--card:#1b1b19;--ink:#f2f1ed;--gray:#5c5a55;--dim:#a9a7a1;--line:#33322f;--ok:#5bd17f;--no:#ff7b72;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#111110;--card:#1b1b19;--ink:#f2f1ed;--gray:#5c5a55;--dim:#a9a7a1;--line:#33322f;--ok:#5bd17f;--no:#ff7b72;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:500 17px/1.7 var(--body);padding-inline:16px;padding-block:28px 72px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--hd);font-weight:700;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:clamp(34px,7vw,52px);line-height:1.15}
+h2{font-size:28px;display:flex;align-items:center;gap:12px}
+h2 .n{font:400 22px var(--lat);background:var(--ink);color:var(--paper);border-radius:10px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center}
+h3{font-size:21px}
+p{margin:0}
+section{display:flex;flex-direction:column;gap:16px}
+.muted{color:var(--dim);font-size:15px}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:34px;padding:0 9px;border-radius:999px;font:900 15px var(--body);vertical-align:middle;letter-spacing:-.5px}
+.chip.H{background:var(--ink);color:var(--paper)}
+.chip.OH{background:var(--paper);color:var(--ink);border:3px solid var(--ink)}
+.chip.Na,.chip.Cl,.chip.K{background:var(--gray);color:var(--ink)}
+sup{font-size:.65em}
+details{border:2px solid var(--ink);border-radius:16px;background:var(--card)}
+details>summary{cursor:pointer;list-style:none;padding:14px 18px;font:700 19px var(--hd);display:flex;justify-content:space-between;align-items:center}
+details>summary::after{content:"+";font:400 22px var(--lat)}
+details[open]>summary::after{content:"−"}
+details>div{padding:0 18px 18px;display:flex;flex-direction:column;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.box{border:2px solid var(--line);border-radius:14px;padding:14px;background:var(--card);min-width:0}
+.eq{font:400 20px var(--lat);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+/* 시뮬레이터 */
+.sim{border:3px solid var(--ink);border-radius:20px;padding:18px;background:var(--card);display:flex;flex-direction:column;gap:16px}
+.ctl{display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:10px}
+.ctl label{font-weight:900}
+.ctl output{font:400 18px var(--lat);text-align:right}
+input[type=range]{width:100%;accent-color:var(--ink)}
+.res{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 16px;font:900 17px var(--body);border:3px solid var(--ink)}
+.pill.fill{background:var(--ink);color:var(--paper)}
+.sw{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink)}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;min-width:460px;text-align:center;font-variant-numeric:tabular-nums}
+table.t th,table.t td{border:2px solid var(--ink);padding:6px 8px}
+table.t th{font-weight:900}
+table.t td.l{text-align:left;font-weight:900;white-space:nowrap}
+.bars{display:flex;align-items:flex-end;gap:14px;height:150px;border-bottom:3px solid var(--ink);padding:0 6px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.bar i{display:block;width:100%;max-width:56px;border-radius:8px 8px 0 0;background:var(--ink);transition:height .25s}
+.bar i.sp{background:var(--gray)} .bar i.oh{background:transparent;border:3px solid var(--ink);border-bottom:none}
+.bar b{font:400 15px var(--lat)}
+.note{border-left:4px solid var(--ink);padding:4px 0 4px 12px;font-weight:700}
+/* 문제 */
+.q{border:3px solid var(--ink);border-radius:20px;background:var(--card);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.qh{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font:900 13px var(--body);border:2px solid var(--ink);border-radius:8px;padding:2px 8px}
+.tag.f{background:var(--ink);color:var(--paper)}
+.bogi{border:2px solid var(--ink);padding:10px 14px;border-radius:6px;display:flex;flex-direction:column;gap:4px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices button{font:700 16px var(--body);background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.choices button:focus-visible,.stepbtn:focus-visible,details>summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.choices button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.choices button.no{background:var(--no);border-color:var(--no);color:#fff}
+.fb{font-weight:900;min-height:1.6em}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{border:2px dashed var(--line);border-radius:12px;padding:10px 12px}
+.step b{font:400 15px var(--lat);margin-right:6px}
+.stepbtn{align-self:flex-start;font:900 15px var(--body);background:var(--ink);color:var(--paper);border:none;border-radius:999px;padding:8px 16px;cursor:pointer}
+.stepbtn[disabled]{opacity:.35;cursor:default}
+svg text{font-family:var(--body);font-weight:700}
+.src{font-size:13px;color:var(--dim)}
+
+/* 비커 시뮬레이터 */
+.lab{display:flex;flex-wrap:wrap;gap:14px 10px;align-items:flex-end;justify-content:center}
+.bkw{display:flex;flex-direction:column;align-items:center;gap:6px;width:128px}
+.bkw.res{width:236px}
+.bkw .nm{font:900 17px var(--body)}
+.bkw input[type=range]{width:116px}
+.bkw .vol{font:400 15px var(--lat)}
+.bk{position:relative;width:100%;height:190px;border:3px solid var(--ink);border-top:none;border-radius:0 0 18px 18px;background:transparent}
+.bk::before{content:"";position:absolute;left:-7px;right:-7px;top:-3px;height:3px;background:var(--ink)}
+.liq{position:absolute;left:0;right:0;bottom:0;border-radius:0 0 14px 14px;background:color-mix(in srgb,var(--ink) 9%,transparent);transition:height .9s ease,background .6s;display:flex;flex-wrap:wrap;align-content:flex-end;gap:2px;padding:3px;overflow:visible}
+.liq:empty{padding:0}
+.ic{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:20px;padding:0 4px;border-radius:999px;font:900 11px var(--body);letter-spacing:-.4px;transition:opacity .5s,transform .5s}
+.ic.H{background:var(--ink);color:var(--paper)}
+.ic.OH{background:var(--paper);color:var(--ink);border:2px solid var(--ink)}
+.ic.Na,.ic.Cl,.ic.K{background:var(--gray);color:var(--ink)}
+.ic.W{background:var(--blu);color:#fff;font-size:10px}
+.ic.gone{opacity:0;transform:scale(.2)}
+.plus{font:400 26px var(--lat);align-self:center;padding-bottom:60px}
+.arrow{font:400 28px var(--lat);align-self:center;padding-bottom:60px}
+.mixbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.mixbar button{font:900 17px var(--body);border:3px solid var(--ink);border-radius:999px;padding:9px 26px;cursor:pointer;background:var(--ink);color:var(--paper)}
+.mixbar button.sub{background:transparent;color:var(--ink)}
+.mixbar button[disabled]{opacity:.35;cursor:default}
+.mixbar button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.out{display:flex;flex-direction:column;gap:16px}
+.out[hidden]{display:none}
+.hint{text-align:center;color:var(--dim);font-weight:700}
+.printbtn{align-self:flex-start;font:900 15px var(--body);background:transparent;color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:7px 18px;cursor:pointer}
+.printbtn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.qrbox{display:flex;flex-direction:column;align-items:center;gap:10px;border:3px solid var(--ink);border-radius:20px;padding:22px;background:var(--card);text-align:center}
+.qrsvg{width:176px;height:176px;background:#fff;padding:10px;border-radius:10px}
+.qrsvg path{fill:#000}
+.qrbox a{color:var(--ink);font-weight:700;word-break:break-all}
+#printSheet{display:none}
+/* 출력용: 수능 기출 시험지 모양 */
+@page{size:A4;margin:9mm 9mm 8mm}
+@media print{
+  body{background:#fff;padding:0}
+  body.printing .wrap{display:none}
+}
+#printSheet{--ink:#000;--paper:#fff;--card:#fff;--line:#999;--dim:#333;--gray:#bbb;
+  font-family:"Noto Serif KR","Batang","Times New Roman",serif;color:#000;background:#fff;font-size:var(--fs,9.4pt);line-height:1.5;
+  flex-direction:column;width:192mm;height:278mm;margin:0 auto;box-sizing:border-box}
+body.printing .wrap{display:none}
+#printSheet .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px double #000;padding-bottom:4px;margin-bottom:6px}
+#printSheet .hd h1{font:900 15pt "Noto Serif KR","Batang",serif;margin:0;letter-spacing:.02em}
+#printSheet .hd .sub{font:600 9pt "Noto Serif KR","Batang",serif}
+#printSheet .hd .who{font:400 9pt "Noto Serif KR","Batang",serif}
+#printSheet .cols{flex:1;min-height:0;column-count:2;column-gap:9mm;column-rule:1px solid #000;column-fill:auto}
+#printSheet .pq{margin:0 0 3.2mm;display:block;orphans:3;widows:3}
+#printSheet .pbogi,#printSheet .ch,#printSheet table.t,#printSheet svg,#printSheet .pfig{break-inside:avoid}
+#printSheet .pq .qt{font-weight:400}
+#printSheet .pq .qt b{font-weight:900;font-size:1.1em;margin-right:.3em}
+#printSheet .pq .pt{font-weight:600}
+#printSheet .pq p{margin:0 0 2px}
+#printSheet .pq .chip{min-width:0;height:auto;padding:0;border:0;background:none;color:#000;border-radius:0;font:600 1em "Noto Serif KR","Batang",serif;vertical-align:baseline}
+#printSheet .pbogi{border:1px solid #000;padding:3px 7px;margin:3px 0 4px}
+#printSheet .pbogi:before{content:"<보 기>";display:block;text-align:center;font-weight:600;margin-bottom:1px}
+#printSheet .pbogi p{margin:0}
+#printSheet .ch{display:grid;grid-template-columns:repeat(5,auto);justify-content:space-between;gap:0 4px}
+#printSheet .ch.v{grid-template-columns:1fr}
+#printSheet table.t{min-width:0;width:100%;font-size:.92em;margin:3px 0}
+#printSheet table.t th,#printSheet table.t td{border:1px solid #000;padding:1px 4px}
+#printSheet .scroll{overflow:visible}
+#printSheet svg{max-width:100%;height:auto}
+#printSheet svg[aria-label*="원그래프"]{width:24mm;height:24mm}
+#printSheet svg[aria-label*="그래프"]:not([aria-label*="원"]){width:64mm}
+#printSheet svg text{font-family:"Noto Serif KR","Batang",serif}
+#printSheet .ft{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #000;margin-top:5px;padding-top:4px;font-size:8pt}
+#printSheet .ft .qrsvg{width:15mm;height:15mm;padding:0;background:none}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:10px">
+  <span class="muted" style="font-weight:900">통합과학 · 화학 변화와 에너지 출입</span>
+  <h1>중화 반응 복습실</h1>
+  <p class="muted">정리는 눌러서 펼치고, 직접 섞어 보고, 공략 4단계로 문제를 풀어 보세요.</p>
+</header>
+
+<section>
+  <h2><span class="n">1</span>한 장 정리</h2>
+  <details><summary>산과 염기</summary><div>
+    <div class="grid2">
+      <div class="box"><h3>산</h3><p>수용액에서 <span class="chip H">H<sup>+</sup></span> 을 내놓는 물질</p><p class="eq">HCl → <span class="chip H">H<sup>+</sup></span> + <span class="chip Cl">Cl<sup>−</sup></span></p><p class="muted">신맛, 금속과 반응해 수소 기체, 탄산 칼슘과 반응해 이산화 탄소</p></div>
+      <div class="box"><h3>염기</h3><p>수용액에서 <span class="chip OH">OH<sup>−</sup></span> 을 내놓는 물질</p><p class="eq">NaOH → <span class="chip Na">Na<sup>+</sup></span> + <span class="chip OH">OH<sup>−</sup></span></p><p class="muted">미끌미끌함, 단백질을 녹임</p></div>
+    </div>
+    <p class="note">수용액 속 양이온 수 = 음이온 수, 같은 수용액이면 이온 수는 부피에 비례</p>
+  </div></details>
+  <details><summary>중화 반응</summary><div>
+    <p class="eq"><span class="chip H">H<sup>+</sup></span> + <span class="chip OH">OH<sup>−</sup></span> → H₂O <span class="muted" style="font:500 15px var(--body)">(1 : 1, 열 발생 = 중화열)</span></p>
+    <p class="note">중화 반응이 일어나도 중성이라는 보장은 없다. H⁺이 남으면 산성, OH⁻이 남으면 염기성</p>
+    <p class="muted">BTB 용액: 산성 노란색 · 중성 초록색 · 염기성 파란색</p>
+  </div></details>
+  <details><summary>구경꾼 이온</summary><div>
+    <p><span class="chip Na">Na<sup>+</sup></span> <span class="chip Cl">Cl<sup>−</sup></span> <span class="chip K">K<sup>+</sup></span> 은 반응에 참여하지 않아 개수가 그대로입니다.</p>
+    <p class="note">섞기 전 Cl⁻ 수 = 처음 H⁺ 수, Na⁺ 수 = 처음 OH⁻ 수 → 구경꾼 이온으로 반응 전 이온 수를 거꾸로 구한다</p>
+  </div></details>
+  <details><summary>중화 반응 공략 4단계</summary><div>
+    <ol style="margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px">
+      <li><b>H⁺과 OH⁻만 반응한다.</b> 나머지는 구경꾼 이온</li>
+      <li><b>혼합 용액의 액성을 파악한다.</b> 주어진 액성은 이온 수를 알려 주는 힌트</li>
+      <li><b>표를 그린다.</b> 염기 이온 먼저, 산 이온 다음 → OH⁻과 H⁺이 붙는다</li>
+      <li><b>이온의 개수를 파악한다.</b> 산성: Cl⁻ = H⁺ + Na⁺ (+ K⁺) / 염기성: Na⁺ (+ K⁺) = OH⁻ + Cl⁻</li>
+    </ol>
+  </div></details>
+</section>
+
+<section>
+  <h2><span class="n">2</span>직접 섞어 보기</h2>
+  <p class="muted">비커마다 부피를 정한 뒤 <b>섞기</b>를 누르면 세 비커의 용액이 오른쪽 비커로 모이고, 반응하는 이온이 물이 됩니다. 같은 진하기라면 10 mL마다 이온이 2개씩 들어 있다고 정했습니다.</p>
+  <div class="sim">
+    <div class="lab" id="lab">
+      <div class="bkw"><span class="nm">HCl</span><div class="bk"><div class="liq" id="lH"></div></div><input id="vH" type="range" min="0" max="30" step="5" value="20" aria-label="HCl 부피"><output class="vol" id="oH">20 mL</output></div>
+      <span class="plus">+</span>
+      <div class="bkw"><span class="nm">NaOH</span><div class="bk"><div class="liq" id="lN"></div></div><input id="vN" type="range" min="0" max="30" step="5" value="10" aria-label="NaOH 부피"><output class="vol" id="oN">10 mL</output></div>
+      <span class="plus">+</span>
+      <div class="bkw"><span class="nm">KOH</span><div class="bk"><div class="liq" id="lK"></div></div><input id="vK" type="range" min="0" max="30" step="5" value="0" aria-label="KOH 부피"><output class="vol" id="oK">0 mL</output></div>
+      <span class="arrow">→</span>
+      <div class="bkw res"><span class="nm" id="rnm">혼합 용액</span><div class="bk"><div class="liq" id="lR"></div></div><span class="vol" id="oR">0 mL</span></div>
+    </div>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:700;justify-content:center"><input id="dbl" type="checkbox"> NaOH를 2배 진하게(10 mL마다 4개)</label>
+    <div class="mixbar"><button type="button" id="mixBtn">섞기</button><button type="button" class="sub" id="resetBtn" disabled>처음으로</button></div>
+    <p class="hint" id="hint">부피를 정하고 섞기를 눌러 보세요.</p>
+    <div class="out" id="out" hidden>
+      <div class="res" id="res"></div>
+      <div class="scroll"><table class="t" id="tbl"></table></div>
+      <div class="bars" id="bars" aria-label="혼합 후 이온 수 막대"></div>
+      <p id="chk" class="note"></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">3</span>추가 문제</h2>
+  <button type="button" class="printbtn" id="printBtn">🖨 한 페이지로 출력 (시험지 모양)</button>
+  <p class="muted">답을 고르면 바로 채점됩니다. 막히면 "풀이 한 단계씩"을 눌러 공략 4단계를 따라가세요.</p>
+  <div id="qs" style="display:flex;flex-direction:column;gap:22px"></div>
+</section>
+
+<section id="qr">
+  <div class="qrbox">
+    <h2 style="font-size:22px">휴대폰으로 접속하기</h2>
+    <svg class="qrsvg" role="img" aria-label="복습실 접속 QR 코드" version="1.1" viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg"><path d="M0,0H1V1H0zM1,0H2V1H1zM2,0H3V1H2zM3,0H4V1H3zM4,0H5V1H4zM5,0H6V1H5zM6,0H7V1H6zM8,0H9V1H8zM11,0H12V1H11zM13,0H14V1H13zM15,0H16V1H15zM16,0H17V1H16zM17,0H18V1H17zM18,0H19V1H18zM20,0H21V1H20zM22,0H23V1H22zM23,0H24V1H23zM24,0H25V1H24zM25,0H26V1H25zM26,0H27V1H26zM27,0H28V1H27zM28,0H29V1H28zM0,1H1V2H0zM6,1H7V2H6zM10,1H11V2H10zM11,1H12V2H11zM16,1H17V2H16zM17,1H18V2H17zM19,1H20V2H19zM20,1H21V2H20zM22,1H23V2H22zM28,1H29V2H28zM0,2H1V3H0zM2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM6,2H7V3H6zM9,2H10V3H9zM10,2H11V3H10zM15,2H16V3H15zM17,2H18V3H17zM19,2H20V3H19zM22,2H23V3H22zM24,2H25V3H24zM25,2H26V3H25zM26,2H27V3H26zM28,2H29V3H28zM0,3H1V4H0zM2,3H3V4H2zM3,3H4V4H3zM4,3H5V4H4zM6,3H7V4H6zM8,3H9V4H8zM9,3H10V4H9zM12,3H13V4H12zM13,3H14V4H13zM14,3H15V4H14zM15,3H16V4H15zM16,3H17V4H16zM18,3H19V4H18zM22,3H23V4H22zM24,3H25V4H24zM25,3H26V4H25zM26,3H27V4H26zM28,3H29V4H28zM0,4H1V5H0zM2,4H3V5H2zM3,4H4V5H3zM4,4H5V5H4zM6,4H7V5H6zM8,4H9V5H8zM10,4H11V5H10zM11,4H12V5H11zM12,4H13V5H12zM14,4H15V5H14zM15,4H16V5H15zM16,4H17V5H16zM17,4H18V5H17zM18,4H19V5H18zM22,4H23V5H22zM24,4H25V5H24zM25,4H26V5H25zM26,4H27V5H26zM28,4H29V5H28zM0,5H1V6H0zM6,5H7V6H6zM8,5H9V6H8zM10,5H11V6H10zM13,5H14V6H13zM14,5H15V6H14zM18,5H19V6H18zM19,5H20V6H19zM22,5H23V6H22zM28,5H29V6H28zM0,6H1V7H0zM1,6H2V7H1zM2,6H3V7H2zM3,6H4V7H3zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM14,6H15V7H14zM16,6H17V7H16zM18,6H19V7H18zM20,6H21V7H20zM22,6H23V7H22zM23,6H24V7H23zM24,6H25V7H24zM25,6H26V7H25zM26,6H27V7H26zM27,6H28V7H27zM28,6H29V7H28zM8,7H9V8H8zM10,7H11V8H10zM14,7H15V8H14zM16,7H17V8H16zM17,7H18V8H17zM18,7H19V8H18zM20,7H21V8H20zM0,8H1V9H0zM4,8H5V9H4zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM9,8H10V9H9zM12,8H13V9H12zM16,8H17V9H16zM17,8H18V9H17zM19,8H20V9H19zM21,8H22V9H21zM22,8H23V9H22zM23,8H24V9H23zM24,8H25V9H24zM25,8H26V9H25zM28,8H29V9H28zM0,9H1V10H0zM3,9H4V10H3zM5,9H6V10H5zM9,9H10V10H9zM12,9H13V10H12zM13,9H14V10H13zM14,9H15V10H14zM15,9H16V10H15zM16,9H17V10H16zM17,9H18V10H17zM18,9H19V10H18zM21,9H22V10H21zM22,9H23V10H22zM24,9H25V10H24zM25,9H26V10H25zM26,9H27V10H26zM27,9H28V10H27zM28,9H29V10H28zM0,10H1V11H0zM1,10H2V11H1zM2,10H3V11H2zM4,10H5V11H4zM5,10H6V11H5zM6,10H7V11H6zM9,10H10V11H9zM12,10H13V11H12zM14,10H15V11H14zM15,10H16V11H15zM18,10H19V11H18zM22,10H23V11H22zM24,10H25V11H24zM28,10H29V11H28zM0,11H1V12H0zM1,11H2V12H1zM2,11H3V12H2zM5,11H6V12H5zM8,11H9V12H8zM10,11H11V12H10zM11,11H12V12H11zM14,11H15V12H14zM15,11H16V12H15zM17,11H18V12H17zM18,11H19V12H18zM21,11H22V12H21zM22,11H23V12H22zM23,11H24V12H23zM25,11H26V12H25zM27,11H28V12H27zM28,11H29V12H28zM0,12H1V13H0zM1,12H2V13H1zM2,12H3V13H2zM3,12H4V13H3zM4,12H5V13H4zM5,12H6V13H5zM6,12H7V13H6zM7,12H8V13H7zM10,12H11V13H10zM11,12H12V13H11zM12,12H13V13H12zM15,12H16V13H15zM17,12H18V13H17zM18,12H19V13H18zM20,12H21V13H20zM23,12H24V13H23zM27,12H28V13H27zM2,13H3V14H2zM3,13H4V14H3zM4,13H5V14H4zM7,13H8V14H7zM8,13H9V14H8zM10,13H11V14H10zM11,13H12V14H11zM12,13H13V14H12zM13,13H14V14H13zM15,13H16V14H15zM17,13H18V14H17zM18,13H19V14H18zM21,13H22V14H21zM22,13H23V14H22zM24,13H25V14H24zM25,13H26V14H25zM26,13H27V14H26zM27,13H28V14H27zM28,13H29V14H28zM0,14H1V15H0zM1,14H2V15H1zM2,14H3V15H2zM6,14H7V15H6zM7,14H8V15H7zM9,14H10V15H9zM12,14H13V15H12zM13,14H14V15H13zM14,14H15V15H14zM15,14H16V15H15zM18,14H19V15H18zM21,14H22V15H21zM22,14H23V15H22zM23,14H24V15H23zM25,14H26V15H25zM26,14H27V15H26zM28,14H29V15H28zM1,15H2V16H1zM3,15H4V16H3zM4,15H5V16H4zM5,15H6V16H5zM7,15H8V16H7zM8,15H9V16H8zM10,15H11V16H10zM11,15H12V16H11zM12,15H13V16H12zM14,15H15V16H14zM15,15H16V16H15zM16,15H17V16H16zM17,15H18V16H17zM18,15H19V16H18zM20,15H21V16H20zM21,15H22V16H21zM22,15H23V16H22zM23,15H24V16H23zM24,15H25V16H24zM27,15H28V16H27zM28,15H29V16H28zM0,16H1V17H0zM2,16H3V17H2zM4,16H5V17H4zM6,16H7V17H6zM7,16H8V17H7zM8,16H9V17H8zM9,16H10V17H9zM10,16H11V17H10zM14,16H15V17H14zM17,16H18V17H17zM19,16H20V17H19zM27,16H28V17H27zM0,17H1V18H0zM4,17H5V18H4zM5,17H6V18H5zM7,17H8V18H7zM11,17H12V18H11zM12,17H13V18H12zM14,17H15V18H14zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM18,17H19V18H18zM21,17H22V18H21zM22,17H23V18H22zM23,17H24V18H23zM24,17H25V18H24zM25,17H26V18H25zM27,17H28V18H27zM28,17H29V18H28zM2,18H3V19H2zM3,18H4V19H3zM5,18H6V19H5zM6,18H7V19H6zM7,18H8V19H7zM8,18H9V19H8zM10,18H11V19H10zM13,18H14V19H13zM14,18H15V19H14zM15,18H16V19H15zM20,18H21V19H20zM21,18H22V19H21zM24,18H25V19H24zM26,18H27V19H26zM28,18H29V19H28zM3,19H4V20H3zM4,19H5V20H4zM7,19H8V20H7zM8,19H9V20H8zM9,19H10V20H9zM10,19H11V20H10zM12,19H13V20H12zM14,19H15V20H14zM17,19H18V20H17zM21,19H22V20H21zM22,19H23V20H22zM23,19H24V20H23zM27,19H28V20H27zM28,19H29V20H28zM0,20H1V21H0zM1,20H2V21H1zM2,20H3V21H2zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM8,20H9V21H8zM11,20H12V21H11zM13,20H14V21H13zM14,20H15V21H14zM16,20H17V21H16zM17,20H18V21H17zM20,20H21V21H20zM21,20H22V21H21zM22,20H23V21H22zM23,20H24V21H23zM24,20H25V21H24zM25,20H26V21H25zM28,20H29V21H28zM8,21H9V22H8zM9,21H10V22H9zM10,21H11V22H10zM14,21H15V22H14zM15,21H16V22H15zM16,21H17V22H16zM19,21H20V22H19zM20,21H21V22H20zM24,21H25V22H24zM28,21H29V22H28zM0,22H1V23H0zM1,22H2V23H1zM2,22H3V23H2zM3,22H4V23H3zM4,22H5V23H4zM5,22H6V23H5zM6,22H7V23H6zM8,22H9V23H8zM12,22H13V23H12zM13,22H14V23H13zM14,22H15V23H14zM15,22H16V23H15zM16,22H17V23H16zM17,22H18V23H17zM18,22H19V23H18zM19,22H20V23H19zM20,22H21V23H20zM22,22H23V23H22zM24,22H25V23H24zM25,22H26V23H25zM26,22H27V23H26zM28,22H29V23H28zM0,23H1V24H0zM6,23H7V24H6zM12,23H13V24H12zM13,23H14V24H13zM15,23H16V24H15zM16,23H17V24H16zM17,23H18V24H17zM18,23H19V24H18zM19,23H20V24H19zM20,23H21V24H20zM24,23H25V24H24zM28,23H29V24H28zM0,24H1V25H0zM2,24H3V25H2zM3,24H4V25H3zM4,24H5V25H4zM6,24H7V25H6zM8,24H9V25H8zM10,24H11V25H10zM11,24H12V25H11zM12,24H13V25H12zM13,24H14V25H13zM15,24H16V25H15zM17,24H18V25H17zM19,24H20V25H19zM20,24H21V25H20zM21,24H22V25H21zM22,24H23V25H22zM23,24H24V25H23zM24,24H25V25H24zM25,24H26V25H25zM28,24H29V25H28zM0,25H1V26H0zM2,25H3V26H2zM3,25H4V26H3zM4,25H5V26H4zM6,25H7V26H6zM10,25H11V26H10zM11,25H12V26H11zM14,25H15V26H14zM15,25H16V26H15zM16,25H17V26H16zM17,25H18V26H17zM18,25H19V26H18zM23,25H24V26H23zM28,25H29V26H28zM0,26H1V27H0zM2,26H3V27H2zM3,26H4V27H3zM4,26H5V27H4zM6,26H7V27H6zM9,26H10V27H9zM12,26H13V27H12zM14,26H15V27H14zM15,26H16V27H15zM18,26H19V27H18zM19,26H20V27H19zM21,26H22V27H21zM25,26H26V27H25zM26,26H27V27H26zM27,26H28V27H27zM28,26H29V27H28zM0,27H1V28H0zM6,27H7V28H6zM10,27H11V28H10zM12,27H13V28H12zM13,27H14V28H13zM14,27H15V28H14zM17,27H18V28H17zM20,27H21V28H20zM23,27H24V28H23zM24,27H25V28H24zM25,27H26V28H25zM27,27H28V28H27zM28,27H29V28H28zM0,28H1V29H0zM1,28H2V29H1zM2,28H3V29H2zM3,28H4V29H3zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM8,28H9V29H8zM10,28H11V29H10zM17,28H18V29H17zM20,28H21V29H20zM22,28H23V29H22zM24,28H25V29H24zM25,28H26V29H25zM27,28H28V29H27z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg>
+    <p class="muted">카메라로 QR 코드를 비추면 이 복습실이 열립니다.</p>
+    <a href="https://bsh3408.github.io/junghwa-review/">bsh3408.github.io/junghwa-review</a>
+  </div>
+</section>
+
+<p class="src">24번 출처: 한국교육과정평가원, 2028학년도 대학수학능력시험 예시문항(통합과학). 나머지 문항은 수업용 자체 제작 문항입니다.</p>
+</div>
+
+<div id="printSheet" aria-hidden="true"></div>
+
+<script>
+(function(){
+const C=(k,t)=>`<span class="chip ${k}">${t}</span>`;
+const H=C('H','H<sup>+</sup>'),OH=C('OH','OH<sup>−</sup>'),NA=C('Na','Na<sup>+</sup>'),CL=C('Cl','Cl<sup>−</sup>'),K=C('K','K<sup>+</sup>');
+
+/* ---------- 직접 섞어 보기 ---------- */
+const $=id=>document.getElementById(id);
+const ICON={H:'H⁺',OH:'OH⁻',Na:'Na⁺',Cl:'Cl⁻',K:'K⁺',W:'H₂O'};
+const ic=k=>{const e=document.createElement('span');e.className='ic '+k;e.textContent=ICON[k];return e;};
+let mixed=false,busy=false;
+function counts(){
+  const h=+$('vH').value,n=+$('vN').value,k=+$('vK').value,d=$('dbl').checked;
+  const b={H:h/5,Cl:h/5,Na:n/5*(d?2:1),K:k/5};b.OH=b.Na+b.K;
+  const w=Math.min(b.H,b.OH);
+  return {h,n,k,b,w,a:{H:b.H-w,OH:b.OH-w,Cl:b.Cl,Na:b.Na,K:b.K},tot:h+n+k};
+}
+function fill(liq,vol,list){
+  liq.style.height=(vol/30*100)+'%';liq.innerHTML='';
+  list.forEach(k=>liq.appendChild(ic(k)));
+}
+function drawSources(){
+  const c=counts();
+  $('oH').textContent=c.h+' mL';$('oN').textContent=c.n+' mL';$('oK').textContent=c.k+' mL';
+  const rep=(k,n)=>Array(n).fill(k);
+  fill($('lH'),c.h,[...rep('H',c.b.H),...rep('Cl',c.b.Cl)]);
+  fill($('lN'),c.n,[...rep('Na',c.b.Na),...rep('OH',c.b.Na)]);
+  fill($('lK'),c.k,[...rep('K',c.b.K),...rep('OH',c.b.K)]);
+  return c;
+}
+function resetLab(){
+  mixed=false;busy=false;
+  const r=$('lR');r.style.height='0%';r.innerHTML='';r.style.background='';
+  $('oR').textContent='0 mL';$('rnm').textContent='혼합 용액';
+  $('out').hidden=true;$('hint').hidden=false;$('hint').textContent='부피를 정하고 섞기를 눌러 보세요.';
+  ['vH','vN','vK','dbl','mixBtn'].forEach(i=>$(i).disabled=false);$('resetBtn').disabled=true;
+  drawSources();
+}
+function readout(c){
+  const a=c.a,w=c.w,tot=c.tot;
+  let liq,col,cn;
+  if(tot===0){liq='용액 없음';col='transparent';cn='';}
+  else if(a.H>0){liq='산성';col='var(--ylw)';cn='노란색';}
+  else if(a.OH>0){liq='염기성';col='var(--blu)';cn='파란색';}
+  else{liq='중성';col='var(--grn)';cn='초록색';}
+  $('res').innerHTML=`<span class="pill fill">${liq}</span>${cn?`<span class="pill"><span class="sw" style="background:${col}"></span>BTB ${cn}</span>`:''}<span class="pill">생성된 물 ${w}개</span><span class="pill">전체 ${tot} mL</span>`;
+  const keys=[['Na',NA],['K',K],['OH',OH],['H',H],['Cl',CL]],b=c.b;
+  $('tbl').innerHTML=`<tr><th></th>${keys.map(x=>`<th>${x[1]}</th>`).join('')}</tr>`+
+    `<tr><td class="l">섞기 전</td>${keys.map(x=>`<td>${b[x[0]]}</td>`).join('')}</tr>`+
+    `<tr><td class="l">섞은 뒤</td>${keys.map(x=>`<td>${a[x[0]]}</td>`).join('')}</tr>`;
+  const mx=Math.max(1,...keys.map(x=>a[x[0]]));
+  $('bars').innerHTML=keys.map(([kk,lab])=>`<div class="bar"><b>${a[kk]}</b><i class="${kk==='H'?'':kk==='OH'?'oh':'sp'}" style="height:${a[kk]/mx*110}px"></i>${lab}</div>`).join('');
+  const pos=a.H+a.Na+a.K,neg=a.OH+a.Cl;
+  $('chk').innerHTML=tot?`검산: 양이온 ${pos}개 = 음이온 ${neg}개 ${pos===neg?'✓':''}${w>0&&liq!=='중성'?' · 중화 반응은 일어났지만 '+liq+'입니다':''}`:'';
+  $('rnm').textContent=`혼합 용액 (${liq})`;
+  $('lR').style.background=`color-mix(in srgb,${col} 70%,transparent)`;
+  $('out').hidden=false;
+}
+function mix(){
+  if(busy||mixed)return;
+  const c=counts();
+  if(c.tot===0){$('hint').textContent='부피를 올려 보세요.';return;}
+  busy=true;['vH','vN','vK','dbl','mixBtn'].forEach(i=>$(i).disabled=true);
+  $('hint').textContent='섞는 중…';
+  const src=[...$('lH').children,...$('lN').children,...$('lK').children];
+  const from=src.map(e=>e.getBoundingClientRect());
+  const kinds=src.map(e=>e.className.replace('ic ',''));
+  const R=$('lR');R.innerHTML='';
+  R.style.height=Math.max(c.tot/90*100,34)+'%';
+  const dst=kinds.map(k=>{const e=ic(k);R.appendChild(e);return e;});
+  $('oR').textContent=c.tot+' mL';
+  requestAnimationFrame(()=>{
+    dst.forEach((e,i)=>{const t=e.getBoundingClientRect(),f=from[i];
+      e.animate([{transform:`translate(${f.left-t.left}px,${f.top-t.top}px)`},{transform:'none'}],{duration:1500,delay:i*35,easing:'cubic-bezier(.4,0,.2,1)',fill:'backwards'});});
+    ['lH','lN','lK'].forEach(i=>{$(i).style.height='0%';$(i).innerHTML='';});
+    setTimeout(()=>{
+      $('hint').textContent=c.w?'H⁺과 OH⁻이 1 : 1로 반응해 물이 됩니다.':'반응할 H⁺ 또는 OH⁻이 없어 이온이 그대로입니다.';
+      const hs=dst.filter((e,i)=>kinds[i]==='H'),os=dst.filter((e,i)=>kinds[i]==='OH');
+      for(let i=0;i<c.w;i++){hs[i].classList.add('gone');os[i].classList.add('gone');}
+      setTimeout(()=>{
+        for(let i=0;i<c.w;i++){hs[i].remove();os[i].remove();const wt=ic('W');R.appendChild(wt);wt.animate([{transform:'scale(.2)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:400,delay:i*60,fill:'backwards'});}
+        setTimeout(()=>{mixed=true;busy=false;readout(c);$('hint').hidden=true;$('resetBtn').disabled=false;},c.w*60+450);
+      },c.w?560:0);
+    },1500+dst.length*35+250);
+  });
+}
+$('mixBtn').addEventListener('click',mix);
+$('resetBtn').addEventListener('click',resetLab);
+['vH','vN','vK','dbl'].forEach(id=>$(id).addEventListener('input',()=>{if(!busy)resetLab();}));
+resetLab();
+
+/* ---------- 추가 문제 ---------- */
+const STD=['① ㄱ','② ㄷ','③ ㄱ, ㄴ','④ ㄱ, ㄷ','⑤ ㄱ, ㄴ, ㄷ'];
+const tbl=(rows)=>`<div class="scroll"><table class="t">${rows.map((r,i)=>`<tr>${r.map((c,j)=>i===0?`<th>${c}</th>`:j===0?`<td class="l">${c}</td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
+function pie(parts,size){ // parts: 분수 배열(합 1)과 라벨
+  let a=-Math.PI/2,s='';const r=size/2-6,c=size/2;
+  parts.forEach(([f,l])=>{const b=a+f*2*Math.PI;const x1=c+r*Math.cos(a),y1=c+r*Math.sin(a),x2=c+r*Math.cos(b),y2=c+r*Math.sin(b);
+    s+=`<path d="M${c} ${c} L${x1} ${y1} A${r} ${r} 0 ${f>.5?1:0} 1 ${x2} ${y2} Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>`;
+    const m=(a+b)/2;s+=`<text x="${c+r*.55*Math.cos(m)}" y="${c+r*.55*Math.sin(m)+6}" text-anchor="middle" font-size="17" fill="var(--ink)">${l}</text>`;a=b;});
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="이온 수 비율 원그래프">${s}</svg>`;}
+function lineChart(){ // Q5: NaOH 부피에 따른 이온 A~D의 수
+  const xs=[0,10,20,30],S={A:[4,4,4,4],B:[4,2,0,0],C:[0,2,4,6],D:[0,0,0,2]},dash={A:'',B:'8 6',C:'2 6',D:'14 6 2 6'};
+  const W=420,Hh=230,L=40,B=190,sx=x=>L+x/30*340,sy=y=>B-y/6*160;
+  let s=`<line x1="${L}" y1="${B}" x2="${L+350}" y2="${B}" stroke="var(--ink)" stroke-width="2"/><line x1="${L}" y1="${B}" x2="${L}" y2="20" stroke="var(--ink)" stroke-width="2"/>`;
+  xs.forEach(x=>s+=`<text x="${sx(x)}" y="${B+22}" text-anchor="middle" font-size="13" fill="var(--ink)">${x}</text>`);
+  [0,2,4,6].forEach(y=>s+=`<text x="${L-10}" y="${sy(y)+5}" text-anchor="end" font-size="13" fill="var(--ink)">${y}</text><line x1="${L}" x2="${L+340}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--line)"/>`);
+  const off={A:-8,B:6,C:-8,D:14};
+  Object.keys(S).forEach(k=>{s+=`<polyline fill="none" stroke="var(--ink)" stroke-width="3" stroke-dasharray="${dash[k]}" points="${S[k].map((y,i)=>sx(xs[i])+','+(sy(y)+(y===0?(k==='D'?4:k==='C'?-2:0):0))).join(' ')}"/>`;
+    s+=`<text x="${sx(30)+10}" y="${sy(S[k][3])+5+off[k]}" font-size="15" fill="var(--ink)">${k}</text>`;});
+  s+=`<text x="${L+170}" y="${B+42}" text-anchor="middle" font-size="13" fill="var(--dim)">넣어 준 NaOH 수용액의 부피(mL)</text>`;
+  return `<svg viewBox="0 0 ${W} ${Hh+20}" width="100%" style="max-width:${W}px" role="img" aria-label="NaOH 부피에 따른 이온 수 그래프">${s}</svg>`;}
+
+const Q=[
+ {tag:'기본',form:'이온 수',title:'비커 두 개를 섞으면?',
+  body:`<p>HCl 수용액 10 mL에는 ${H} 3개, ${CL} 3개가, NaOH 수용액 10 mL에는 ${NA} 2개, ${OH} 2개가 들어 있다. 두 수용액을 모두 섞었다.</p>`,
+  bogi:['혼합 용액은 산성이다.','생성된 물 분자는 2개이다.','혼합 용액에서 가장 많은 이온은 Na⁺이다.'],choices:STD,ans:2,
+  steps:['반응하는 건 H⁺ 3개와 OH⁻ 2개뿐. Na⁺ 2개, Cl⁻ 3개는 그대로.','OH⁻ 2개가 H⁺ 2개와 1 : 1로 반응하고 H⁺ 1개가 남으니 산성.','표: Na⁺ 2 | OH⁻ 0 | H⁺ 1 | Cl⁻ 3, 물 2개.','검산: 산성이니 Cl⁻ 3 = H⁺ 1 + Na⁺ 2. 가장 많은 이온은 Cl⁻이므로 ㄷ은 틀림. 정답 ③.']},
+ {tag:'기본',form:'지시약',title:'BTB 색 맞히기',
+  body:`<p>HCl 수용액과 NaOH 수용액은 1 mL에 들어 있는 이온 수가 같다. 부피를 달리하여 섞은 혼합 용액 A~C에 BTB 용액을 넣었다.</p>`+tbl([['혼합 용액','A','B','C'],['HCl(mL)','10','20','15'],['NaOH(mL)','15','20','5']]),
+  bogi:null,choices:['① 노란색, 초록색, 파란색','② 파란색, 초록색, 노란색','③ 초록색, 초록색, 초록색','④ 파란색, 노란색, 초록색','⑤ 노란색, 파란색, 초록색'],ans:1,ask:'A, B, C의 색을 순서대로 고른 것은?',
+  steps:['1 mL당 이온 수가 같으니 부피를 그대로 이온 수로 볼 수 있다.','A: OH⁻이 5만큼 많다 → 염기성. B: 같다 → 중성. C: H⁺이 10만큼 많다 → 산성.','BTB: 염기성 파란색, 중성 초록색, 산성 노란색.','A 파란색, B 초록색, C 노란색. 정답 ②.']},
+ {tag:'기본',form:'구경꾼 이온',title:'섞은 뒤만 보고 거꾸로',
+  body:`<p>HCl 수용액과 NaOH 수용액을 섞은 혼합 용액에 ${NA} 6개, ${CL} 4개, ${OH} 2개가 들어 있다.</p>`,
+  bogi:['혼합 전 NaOH 수용액에 들어 있던 OH⁻은 6개이다.','반응한 H⁺은 4개이다.','혼합 용액은 염기성이다.'],choices:STD,ans:4,
+  steps:['Na⁺, Cl⁻은 구경꾼 이온이라 섞기 전과 수가 같다.','OH⁻이 남아 있으니 염기성, H⁺은 0개.','섞기 전: Na⁺ 6 → OH⁻ 6, Cl⁻ 4 → H⁺ 4.','H⁺ 4개가 OH⁻ 4개와 반응하고 OH⁻ 2개가 남는다. ㄱ, ㄴ, ㄷ 모두 맞음. 정답 ⑤.']},
+ {tag:'수업 문제',form:'원그래프',title:'수업에서 푼 변형 문제',
+  body:`<p>HCl 수용액과 NaOH 수용액을 섞은 혼합 용액 (가), (나)에 대한 자료이다.</p>`+tbl([['혼합 용액','(가)','(나)'],['HCl(mL)','20','10'],['NaOH(mL)','10','30'],['BTB 색','노란색','']])+`<div style="display:flex;align-items:center;gap:12px"><span style="font-weight:900">(가)의 모든 이온 수 비율</span>${pie([[.5,'1/2'],[.25,'1/4'],[.25,'1/4']],150)}</div>`,
+  bogi:['(가)에서 H⁺ 수는 Cl⁻ 수와 같다.','같은 부피에 들어 있는 이온 수는 HCl 수용액과 NaOH 수용액이 같다.','(나)에서 가장 많은 이온은 Na⁺이다.'],choices:['① ㄱ','② ㄴ','③ ㄴ, ㄷ','④ ㄱ, ㄷ','⑤ ㄱ, ㄴ, ㄷ'],ans:2,
+  steps:['반응하는 건 H⁺과 OH⁻뿐, Na⁺·Cl⁻은 그대로.','(가)는 노란색 → 산성 → OH⁻ 0개, 이온은 H⁺, Cl⁻, Na⁺ 세 종류.','표를 그리고 공식: 산성이면 Cl⁻ = H⁺ + Na⁺ → Cl⁻이 1/2, H⁺과 Na⁺이 1/4씩. Cl⁻ 4개로 두면 H⁺ 2, Na⁺ 2.','되돌리면 HCl 20 mL에 4개, NaOH 10 mL에 2개 → 10 mL당 2개씩 같다. (나): Na⁺ 6, OH⁻ 4, Cl⁻ 2. 정답 ③.']},
+ {tag:'응용',form:'그래프',title:'NaOH를 조금씩 넣을 때',
+  body:`<p>HCl 수용액 20 mL에 NaOH 수용액을 조금씩 넣으면서 혼합 용액 속 이온 A~D의 수를 나타낸 것이다. A~D는 H⁺, OH⁻, Na⁺, Cl⁻ 중 하나이다.</p>${lineChart()}`,
+  bogi:['A는 반응에 참여하지 않는 이온이다.','D는 Na⁺이다.','NaOH 수용액 20 mL를 넣을 때까지 전체 이온 수는 일정하다.'],choices:STD,ans:3,
+  steps:['개수가 변하지 않는 A는 처음부터 있던 구경꾼 이온 Cl⁻.','B는 줄어들다 0이 되는 H⁺, C는 처음부터 늘어나는 Na⁺, D는 중화가 끝난 뒤에야 늘어나는 OH⁻.','20 mL에서 H⁺이 0, 이후 OH⁻이 남으니 20 mL가 중화점.','20 mL까지는 H⁺ 하나가 Na⁺ 하나로 바뀌므로 전체 4 + 4 = 8개 일정. ㄱ, ㄷ 맞음. 정답 ④.']},
+ {tag:'응용',form:'최고 온도',title:'어디가 가장 뜨거울까',
+  body:`<p>1 mL에 들어 있는 이온 수가 같은 HCl 수용액과 NaOH 수용액을 섞어 전체 부피가 30 mL인 혼합 용액 Ⅰ~Ⅲ을 만들었다.</p>`+tbl([['혼합 용액','Ⅰ','Ⅱ','Ⅲ'],['HCl(mL)','10','15','20'],['NaOH(mL)','20','15','10']]),
+  bogi:['혼합 후 최고 온도는 Ⅱ가 가장 높다.','Ⅰ과 Ⅲ의 액성은 같다.','Ⅰ은 염기성이다.'],choices:STD,ans:3,
+  steps:['반응하는 H⁺과 OH⁻ 수만큼 물이 생기고, 물이 많을수록 중화열이 크다.','Ⅰ: OH⁻이 남아 염기성. Ⅱ: 중성. Ⅲ: H⁺이 남아 산성.','10 mL당 2개로 두면 물: Ⅰ 2개, Ⅱ 3개, Ⅲ 2개.','전체 부피가 모두 30 mL로 같으니 Ⅱ가 가장 뜨겁다. Ⅰ과 Ⅲ은 액성이 다르다. 정답 ④.']},
+ {tag:'응용',form:'혼합 용액끼리',title:'(가)와 (나)를 다시 섞으면',
+  body:`<p>4번 문제의 혼합 용액 (가)와 (나)를 모두 섞었다. ((가): H⁺ 2, Cl⁻ 4, Na⁺ 2 / (나): Na⁺ 6, OH⁻ 4, Cl⁻ 2)</p>`,
+  bogi:['섞은 용액은 염기성이다.','새로 생성되는 물 분자는 2개이다.','섞은 용액에서 Na⁺ 수는 Cl⁻ 수와 같다.'],choices:STD,ans:2,
+  steps:['혼합 용액끼리 섞을 때는 남은 H⁺과 남은 OH⁻만 비교하면 된다.','H⁺ 2개와 OH⁻ 4개 → OH⁻ 2개가 남아 염기성.','새로 생긴 물은 반응한 H⁺ 수만큼 2개.','Na⁺ 2 + 6 = 8, Cl⁻ 4 + 2 = 6으로 다르다. 검산: Na⁺ 8 = OH⁻ 2 + Cl⁻ 6. 정답 ③.']},
+ {tag:'심화',form:'세 용액',title:'KOH가 들어오면',
+  body:`<p>1 mL에 들어 있는 이온 수가 같은 HCl, NaOH, KOH 수용액을 각각 20 mL, 5 mL, 10 mL 섞었다.</p>`,
+  bogi:['혼합 용액은 산성이다.','혼합 용액에서 가장 많은 양이온은 K⁺이다.','생성된 물 분자 수는 처음 H⁺ 수의 3/4이다.'],choices:STD,ans:4,
+  steps:['K⁺도 Na⁺처럼 구경꾼 이온. 반응하는 건 H⁺과 OH⁻뿐.','10 mL당 2개로 두면 H⁺ 4, OH⁻ 1 + 2 = 3 → H⁺ 1개가 남아 산성.','표: Na⁺ 1 | K⁺ 2 | OH⁻ 0 | H⁺ 1 | Cl⁻ 4.','공식: Cl⁻ 4 = H⁺ 1 + Na⁺ 1 + K⁺ 2 ✓. 양이온 중 K⁺ 2가 가장 많고, 물 3개 = 4의 3/4. 정답 ⑤.']},
+ {tag:'수능 예시문항',form:'24번',title:'실제 24번에 도전',
+  body:`<p>HCl, NaOH, KOH 수용액의 부피를 달리하여 혼합한 용액 (가)~(다)에 대한 자료이다.</p>`+tbl([['혼합 용액','(가)','(나)','(다)'],['HCl(mL)','10','20','25'],['NaOH(mL)','15','20','15'],['KOH(mL)','30','15','15'],['최고 온도','t₁','t₂','t₃']])+`<div style="display:flex;align-items:center;gap:12px"><span style="font-weight:900">(가)의 모든 이온 수 비율</span>${pie([[.25,'1/4'],[.25,'1/4'],[.25,'1/4'],[.25,'1/4']],150)}</div>`,
+  bogi:null,ask:'t₁, t₂, t₃ 중 가장 큰 값(㉠)과, (가)와 (다)를 혼합한 용액의 액성(㉡)으로 옳은 것은? (단, 혼합 전 온도는 같고, 혼합 용액의 부피는 혼합 전 부피의 합과 같다.)',
+  choices:['① t₁, 산성','② t₁, 염기성','③ t₂, 산성','④ t₂, 중성','⑤ t₃, 염기성'],ans:3,
+  steps:['반응하는 건 H⁺과 OH⁻뿐. Cl⁻, Na⁺, K⁺은 그대로.','(가)는 네 이온이 1/4씩. 산성이라면 Cl⁻ 혼자 나머지를 합친 만큼(1/2)이어야 하니 불가능 → 염기성, 이온은 Cl⁻, Na⁺, K⁺, OH⁻.','1 mL당 이온 수를 HCl a, NaOH b, KOH c라 하면 Cl⁻ 10a = Na⁺ 15b = K⁺ 30c → a : b : c = 3 : 2 : 1. 표에 넣으면 물: (가) 30, (나) 55, (다) 45.','세 용액 모두 55 mL라 물이 가장 많은 (나)가 가장 뜨겁다 → t₂. (가)에 남은 OH⁻ 30과 (다)에 남은 H⁺ 30이 만나 중성. 정답 ④.']},
+];
+
+const host=$('qs');
+Q.forEach((q,i)=>{
+  const el=document.createElement('article');el.className='q';
+  el.innerHTML=`<div class="qh"><span class="tag f">${i+1}</span><span class="tag">${q.tag}</span><span class="tag">${q.form}</span><h3 style="margin-left:4px">${q.title}</h3></div>
+    ${q.body}
+    <p style="font-weight:700">${q.ask||'이에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?'}</p>
+    ${q.bogi?`<div class="bogi">${q.bogi.map((b,j)=>`<p>${'ㄱㄴㄷ'[j]}. ${b}</p>`).join('')}</div>`:''}
+    <div class="choices">${q.choices.map((c,j)=>`<button type="button" data-j="${j}">${c}</button>`).join('')}</div>
+    <p class="fb" aria-live="polite"></p>
+    <div class="steps"></div>
+    <button type="button" class="stepbtn">풀이 한 단계씩 (1/4)</button>`;
+  const fb=el.querySelector('.fb'),st=el.querySelector('.steps'),sb=el.querySelector('.stepbtn');
+  el.querySelectorAll('.choices button').forEach(b=>b.addEventListener('click',()=>{
+    el.querySelectorAll('.choices button').forEach(x=>x.classList.remove('ok','no'));
+    const j=+b.dataset.j;if(j===q.ans){b.classList.add('ok');fb.className='fb ok';fb.textContent='정답!';}
+    else{b.classList.add('no');fb.className='fb no';fb.textContent='다시 생각해 보세요. 풀이를 한 단계씩 열어 봐도 좋아요.';}}));
+  let n=0;sb.addEventListener('click',()=>{if(n>=4)return;const d=document.createElement('div');d.className='step';d.innerHTML=`<b>${n+1}단계</b>${q.steps[n]}`;st.appendChild(d);n++;
+    sb.textContent=n<4?`풀이 한 단계씩 (${n+1}/4)`:'풀이 끝';if(n>=4)sb.disabled=true;});
+  host.appendChild(el);
+});
+
+/* ---------- 한 페이지 출력(수능 기출 모양) ---------- */
+const QRSVG=document.querySelector('#qr .qrsvg').outerHTML;
+function buildSheet(){
+  const pts=q=>q.tag==='기본'?2:3;
+  const html=Q.map((q,i)=>{
+    const longCh=q.choices.some(c=>c.length>9);
+    const ask=(q.ask||'이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<div class="pq">${q.body.replace(/^<p>/,`<p class="qt"><b>${i+1}.</b>`)}`+
+      `<p class="qt">${ask} <span class="pt">[${pts(q)}점]</span></p>`+
+      (q.bogi?`<div class="pbogi">${q.bogi.map((b,j)=>`<p>${'ㄱㄴㄷ'[j]}. ${b}</p>`).join('')}</div>`:'')+
+      `<div class="ch${longCh?' v':''}">${q.choices.map(c=>`<span>${c}</span>`).join('')}</div></div>`;
+  }).join('');
+  $('printSheet').innerHTML=`<div class="hd"><div><h1>통합과학 · 중화 반응 추가 문제</h1><div class="sub">화학 변화와 에너지 출입 (산과 염기, 중화 반응)</div></div><div class="who">학년 반 번호 (      ) 이름 (            )</div></div>`+
+    `<div class="cols">${html}</div>`+
+    `<div class="ft"><span>24번 출처: 한국교육과정평가원 2028학년도 대학수학능력시험 예시문항(통합과학) · 나머지는 수업용 자체 제작</span><span style="display:flex;align-items:center;gap:6px">정답·풀이 온라인 ${QRSVG}</span></div>`;
+}
+function fitSheet(){
+  const sh=$('printSheet'),cols=sh.querySelector('.cols');
+  for(let fs=10.2;fs>=6.2;fs-=.2){sh.style.setProperty('--fs',fs.toFixed(1)+'pt');
+    if(cols.scrollWidth<=cols.clientWidth+2)break;}
+}
+async function doPrint(){
+  buildSheet();
+  try{await Promise.all(['400','600','900'].map(w=>document.fonts.load(w+' 10pt "Noto Serif KR"','통합과학 중화 반응 ㄱㄴㄷ')));}catch(e){}
+  document.body.classList.add('printing');
+  const sh=$('printSheet');sh.style.display='flex';
+  fitSheet();
+  const done=()=>{document.body.classList.remove('printing');sh.style.display='';window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done);
+  setTimeout(()=>window.print(),150);
+}
+$('printBtn').addEventListener('click',doPrint);
+})();
+</script>
